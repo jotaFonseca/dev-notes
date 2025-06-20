@@ -23,7 +23,6 @@ header {
 #search-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 
 #search-input {
@@ -32,6 +31,7 @@ header {
   border-radius: 5px;
   color: #ddd;
   font-weight: bold;
+  margin-left: .5rem;
   padding: .5rem 1rem;
   width: 400px;
 }
