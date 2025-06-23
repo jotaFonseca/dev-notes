@@ -1,13 +1,13 @@
 // Elements
 const noteContainer = document.querySelector("#notes-container");
-const noteContent = document.querySelector("#note-content");
+const noteInput = document.querySelector("#note-input");
 const addNoteBtn = document.querySelector(".add-note");
 
 // Functions
 const addNote = () => {
   const noteObj = {
     id: randomId(),
-    content: noteContent.value,
+    content: noteInput.value,
     fixed: false,
   };
 
@@ -26,7 +26,7 @@ const createNote = (id, content, fixed) => {
 
   const textArea = document.createElement("textarea");
   textArea.value = content;
-  textArea.placeholder = "Adicione algum texto...";
+  textArea.placeholder = "O que você deseja anotar?";
 
   element.appendChild(textArea);
   return element;
