@@ -1,7 +1,8 @@
 // Elements
-const noteContainer = document.querySelector("#notes-container");
+const notesContainer = document.querySelector("#notes-container");
 const noteInput = document.querySelector("#note-input");
 const addNoteBtn = document.querySelector(".add-note");
+const searchInput = document.querySelector("#search-input");
 
 // Functions
 const showNotes = () => {
@@ -9,12 +10,12 @@ const showNotes = () => {
 
   getNotes().forEach((note) => {
     const noteElement = createNote(note.id, note.content, note.fixed);
-    noteContainer.appendChild(noteElement);
+    notesContainer.appendChild(noteElement);
   });
 };
 
 const cleanNotes = () => {
-  noteContainer.replaceChildren([]);
+  notesContainer.replaceChildren([]);
 };
 
 const addNote = () => {
@@ -28,7 +29,7 @@ const addNote = () => {
 
   const note = createNote(noteObj.id, noteObj.content);
 
-  noteContainer.appendChild(note);
+  notesContainer.appendChild(note);
   notes.push(noteObj);
   saveNotes(notes);
   noteInput.value = "";
@@ -104,7 +105,7 @@ const deleteNote = (id, element) => {
 
   saveNotes(notes);
 
-  noteContainer.removeChild(element);
+  notesContainer.removeChild(element);
 };
 
 const copyNote = (id) => {
@@ -120,7 +121,7 @@ const copyNote = (id) => {
 
   const noteElement = createNote(noteObj.id, noteObj.content, noteObj.fixed);
 
-  noteContainer.appendChild(noteElement);
+  notesContainer.appendChild(noteElement);
   notes.push(noteObj);
 
   saveNotes(notes);
@@ -148,8 +149,41 @@ const getNotes = () => {
 const saveNotes = (notes) => {
   localStorage.setItem("notes", JSON.stringify(notes));
 };
+
+const searchNotes = (search) => {
+  const searchResults = getNotes().filter((note) => {
+    return note.content.includes(search);
+  });
+
+  if (search !== "") {
+    cleanNotes();
+
+    searchResults.forEach((note) => {
+      const noteElement = createNote(note.id, note.content);
+      notesContainer.appendChild(noteElement);
+    });
+
+    return;
+  }
+
+  cleanNotes();
+
+  showNotes();
+};
+
 // Events
 addNoteBtn.addEventListener("click", () => addNote());
+searchInput.addEventListener("keyup", (e) => {
+  const search = e.target.value;
+
+  searchNotes(search);
+});
+
+noteInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    addNote();
+  }
+});
 
 // Initialize
 showNotes();
