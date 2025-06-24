@@ -40,8 +40,30 @@ const createNote = (id, content, fixed) => {
   textArea.value = content;
   textArea.placeholder = "O que você deseja anotar?";
 
-  element.appendChild(textArea);
+  const pinIcon = document.createElement("i");
+  pinIcon.classList.add(...["bi", "bi-pin"]);
+
+  element.append(textArea, pinIcon);
+
+  if (fixed) {
+    element.classList.add("fixed");
+  }
+
+  // Element's event
+  element.querySelector(".bi-pin").addEventListener("click", () => {
+    toggleFixedNotes(id);
+  });
+
   return element;
+};
+
+const toggleFixedNotes = (id) => {
+  const notes = getNotes();
+
+  const targetNote = notes.filter((note) => note.id === id)[0];
+  targetNote.fixed = !targetNote.fixed;
+
+  saveNotes(notes);
 };
 
 // Local Storage
