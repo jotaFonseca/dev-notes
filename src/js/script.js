@@ -15,7 +15,7 @@ const showNotes = () => {
 
 const cleanNotes = () => {
   noteContainer.replaceChildren([]);
-}
+};
 
 const addNote = () => {
   const notes = getNotes();
@@ -46,10 +46,19 @@ const createNote = (id, content, fixed) => {
   textArea.value = content;
   textArea.placeholder = "O que você deseja anotar?";
 
+  element.appendChild(textArea);
+  //Creating the icons
   const pinIcon = document.createElement("i");
   pinIcon.classList.add(...["bi", "bi-pin"]);
+  element.appendChild(pinIcon);
 
-  element.append(textArea, pinIcon);
+  const deleteIcon = document.createElement("i");
+  deleteIcon.classList.add(...["bi", "bi-x-lg"]);
+  element.appendChild(deleteIcon);
+
+  const duplicateIcon = document.createElement("i");
+  duplicateIcon.classList.add(...["bi", "bi-file-earmark-plus"]);
+  element.appendChild(duplicateIcon);
 
   if (fixed) {
     element.classList.add("fixed");
@@ -59,6 +68,16 @@ const createNote = (id, content, fixed) => {
   element.querySelector(".bi-pin").addEventListener("click", () => {
     toggleFixedNotes(id);
   });
+
+  element.querySelector(".bi-x-lg").addEventListener("click", () => {
+    deleteNote(id, element);
+  });
+
+  element
+    .querySelector(".bi-file-earmark-plus")
+    .addEventListener("click", () => {
+      copyNote(id);
+    });
 
   return element;
 };
@@ -74,11 +93,39 @@ const toggleFixedNotes = (id) => {
   showNotes();
 };
 
+const deleteNote = (id, element) => {
+  const notes = getNotes().filter((note) => note.id !== id);
+
+  saveNotes(notes);
+
+  noteContainer.removeChild(element);
+};
+
+const copyNote = (id) => {
+  const notes = getNotes();
+
+  const targetNote = notes.filter((note) => note.id === id)[0];
+
+  const noteObj = {
+    id: randomId(),
+    content: targetNote.content,
+    fixed: false,
+  };
+
+  const noteElement = createNote(noteObj.id, noteObj.content, noteObj.fixed);
+
+  noteContainer.appendChild(noteElement);
+
+  notes.push(noteObj);
+
+  saveNotes(notes);
+};
+
 // Local Storage
 const getNotes = () => {
   const notes = JSON.parse(localStorage.getItem("notes") || "[]");
 
-  const oderedNotes = notes.sort((a, b) => a.fixed > b.fixed ? -1 : 1);
+  const oderedNotes = notes.sort((a, b) => (a.fixed > b.fixed ? -1 : 1));
 
   return oderedNotes;
 };
